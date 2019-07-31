@@ -11,5 +11,5 @@ There are more Kokkos versions of miniApps on github in the following repositori
 * MiniAero, a unstructured finite elements (more complex than MiniFE): https://github.com/Mantevo/miniAero
 * Snap, discrete ordinates neutral particle transport: https://github.com/UoB-HPC/SNAP-Kokkos
 * TeaLeaf, heat conduction unassembled solve: https://github.com/UoB-HPC/TeaLeaf-Kokkos
-* HPCG, MultiGrid Preconditioned Conjugat Gradient Solve, part ot Top500 benchmarks: https://github.com/kokkos/hpcg
+* KHPCG, MultiGrid Preconditioned Conjugate Gradient Solve, part ot Top500 benchmarks: https://github.com/hpcg-benchmark/KHPCG3.0
 
