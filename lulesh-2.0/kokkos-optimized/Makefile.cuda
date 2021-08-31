@@ -1,20 +1,20 @@
 #Set your Kokkos path to something appropriate
-KOKKOS_PATH = ${HOME}/kokkos
-KOKKOS_DEVICES = "OpenMP,Cuda"
-KOKKOS_ARCH = "SNB,Kepler35"
+KOKKOS_PATH = ${HOME}/Kokkos/kokkos
+KOKKOS_DEVICES = "Cuda,OpenMP"
+KOKKOS_ARCH = "Volta70"
 KOKKOS_CUDA_OPTIONS = force_uvm,enable_lambda
 SRC = $(wildcard *.cc)
 
 default: build
 	echo "Start Build"
 	
-CXXFLAGS = -g -O3 -DUSE_OMP=1 -lineinfo -DRAJA_USE_GETTIME -I./includes -I./ -expt-extended-lambda
+CXXFLAGS = -g -O3 -DUSE_OMP=1 -lineinfo -DRAJA_USE_GETTIME -I./includes -I./ -lineinfo
 
 ifeq ( $(USE_MPI), yes) 
 CXX = mpicxx
 CXXFLAGS += -DUSE_MPI=1
 else
-CXX = nvcc_wrapper
+CXX = ${KOKKOS_PATH}/bin/nvcc_wrapper
 CXXFLAGS += -DUSE_MPI=0
 endif
 

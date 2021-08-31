@@ -44,17 +44,17 @@ typedef int Int_t;    // integer representation
 
 enum { VolumeError = -1, QStopError = -2 };
 
-inline real4 SQRT(real4 arg) { return sqrtf(arg); }
-inline real8 SQRT(real8 arg) { return sqrt(arg); }
-inline real10 SQRT(real10 arg) { return sqrtl(arg); }
+KOKKOS_INLINE_FUNCTION real4 SQRT(real4 arg) { return sqrtf(arg); }
+KOKKOS_INLINE_FUNCTION real8 SQRT(real8 arg) { return sqrt(arg); }
+KOKKOS_INLINE_FUNCTION real10 SQRT(real10 arg) { return sqrtl(arg); }
 
-inline real4 CBRT(real4 arg) { return cbrtf(arg); }
-inline real8 CBRT(real8 arg) { return cbrt(arg); }
-inline real10 CBRT(real10 arg) { return cbrtl(arg); }
+KOKKOS_INLINE_FUNCTION real4 CBRT(real4 arg) { return cbrtf(arg); }
+KOKKOS_INLINE_FUNCTION real8 CBRT(real8 arg) { return cbrt(arg); }
+KOKKOS_INLINE_FUNCTION real10 CBRT(real10 arg) { return cbrtl(arg); }
 
-inline real4 FABS(real4 arg) { return fabsf(arg); }
-inline real8 FABS(real8 arg) { return fabs(arg); }
-inline real10 FABS(real10 arg) { return fabsl(arg); }
+KOKKOS_INLINE_FUNCTION real4 FABS(real4 arg) { return fabsf(arg); }
+KOKKOS_INLINE_FUNCTION real8 FABS(real8 arg) { return fabs(arg); }
+KOKKOS_INLINE_FUNCTION real10 FABS(real10 arg) { return fabsl(arg); }
 
 // Stuff needed for boundary conditions
 // 2 BCs on each of 6 hexahedral faces (12 bits)
@@ -133,7 +133,7 @@ public:
          Index_t nx, Int_t tp, Int_t nr, Int_t balance, Int_t cost);
 
   // Destructor
-  ~Domain();
+  KOKKOS_FUNCTION ~Domain();
 
   //
   // ALLOCATION
@@ -156,6 +156,7 @@ public:
     m_fx.resize(numNode); // forces
     m_fy.resize(numNode);
     m_fz.resize(numNode);
+    printf("m_fx: %p %i\n",m_fx.data(),int(numNode));
 
     m_nodalMass.resize(numNode); // mass
 
@@ -752,7 +753,7 @@ void InitMeshDecomp(Int_t numRanks, Int_t myRank, Int_t *col, Int_t *row,
 /* better managed, as in luleshFT */
 
 template <typename T> T *Allocate(size_t size) {
-  return static_cast<T *>(Kokkos::kokkos_malloc<>(sizeof(T) * size));
+  return static_cast<T *>(Kokkos::kokkos_malloc<>(sizeof(T) * size + 8));
 }
 
 template <typename T> void Release(T **ptr) {
@@ -799,6 +800,12 @@ struct reduce_double3 {
     x = 0.0;
     y = 0.0;
     z = 0.0;
+  }
+  KOKKOS_INLINE_FUNCTION
+  void operator+=(const volatile reduce_double3 &src) volatile {
+    x += src.x;
+    y += src.y;
+    z += src.z;
   }
   KOKKOS_INLINE_FUNCTION
   void operator+=(const reduce_double3 &src) {

@@ -139,7 +139,7 @@ static inline void InitStressTermsForElems(Domain &domain, Real_t *sigxx,
   });
 }
 
-static inline void CalcElemShapeFunctionDerivatives(Real_t const x[],
+KOKKOS_INLINE_FUNCTION void CalcElemShapeFunctionDerivatives(Real_t const x[],
                                                     Real_t const y[],
                                                     Real_t const z[],
                                                     Real_t b[][8],
@@ -346,12 +346,10 @@ static inline void IntegrateStressForElems(Domain &domain, Real_t *sigxx,
                                   &fz_elem[k * 8]);
   });
 
-#ifdef KOKKOS_HAVE_CUDA
-     int team_size = std::is_same<Kokkos::DefaultExecutionSpace,Kokkos::Cuda>::value?128:1;
-#else
-     int team_size = 1;
-#endif
-     Kokkos::parallel_for ("IntegrateStressForElems B",Kokkos::TeamPolicy<>((numNode+127)/128,team_size,2),
+  int team_size = 1;
+  if(Kokkos::DefaultExecutionSpace().concurrency()>1024) team_size = 128;
+
+  Kokkos::parallel_for ("IntegrateStressForElems B",Kokkos::TeamPolicy<>((numNode+127)/128,team_size,2),
         KOKKOS_LAMBDA (const typename Kokkos::TeamPolicy<>::member_type& team)
      {
        const Index_t gnode_begin = team.league_rank()*128;
@@ -376,7 +374,7 @@ static inline void IntegrateStressForElems(Domain &domain, Real_t *sigxx,
      });
 }
 
-static inline void VoluDer(const Real_t x0, const Real_t x1, const Real_t x2,
+KOKKOS_INLINE_FUNCTION void VoluDer(const Real_t x0, const Real_t x1, const Real_t x2,
                            const Real_t x3, const Real_t x4, const Real_t x5,
                            const Real_t y0, const Real_t y1, const Real_t y2,
                            const Real_t y3, const Real_t y4, const Real_t y5,
@@ -649,11 +647,9 @@ static inline void CalcFBHourglassForceForElems(Domain &domain, Real_t *determ,
   });
 
   if(!do_atomic) {
-#ifdef KOKKOS_HAVE_CUDA
-     int team_size = std::is_same<Kokkos::DefaultExecutionSpace,Kokkos::Cuda>::value?128:1;
-#else
-     int team_size = 1;
-#endif
+    int team_size = 1;
+    if(Kokkos::DefaultExecutionSpace().concurrency()>1024) team_size = 128;
+
      Kokkos::parallel_for ("CalcFBHourglassForceForElems B",Kokkos::TeamPolicy<>((numNode+127)/128,team_size,2),
         KOKKOS_LAMBDA (const typename Kokkos::TeamPolicy<>::member_type& team)
      {
