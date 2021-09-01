@@ -420,19 +420,19 @@ class Domain {
       Real_t x, y, z ;
    } ;
 
-   Kokkos::vector<Tuple3> m_coord ;  /* coordinates */
+   Kokkos::View<Tuple3*> m_coord ;  /* coordinates */
 
-   Kokkos::vector<Tuple3> m_vel ; /* velocities */
+   Kokkos::View<Tuple3*> m_vel ; /* velocities */
 
-   Kokkos::vector<Tuple3> m_acc ; /* accelerations */
+   Kokkos::View<Tuple3*> m_acc ; /* accelerations */
 
-   Kokkos::vector<Tuple3> m_force ;  /* forces */
+   Kokkos::View<Tuple3*> m_force ;  /* forces */
 
-   Kokkos::vector<Real_t> m_nodalMass ;  /* mass */
+   Kokkos::View<Real_t*> m_nodalMass ;  /* mass */
 
-   Kokkos::vector<Index_t> m_symmX ;  /* symmetry plane nodesets */
-   Kokkos::vector<Index_t> m_symmY ;
-   Kokkos::vector<Index_t> m_symmZ ;
+   Kokkos::View<Index_t*> m_symmX ;  /* symmetry plane nodesets */
+   Kokkos::View<Index_t*> m_symmY ;
+   Kokkos::View<Index_t*> m_symmZ ;
 
    // Element-centered
 
@@ -443,57 +443,57 @@ class Domain {
    Index_t *m_regNumList ;    // Region number per domain element
    Index_t **m_regElemlist ;  // region indexset 
 
-   Kokkos::vector<Index_t>  m_nodelist ;     /* elemToNode connectivity */
+   Kokkos::View<Index_t*>  m_nodelist ;     /* elemToNode connectivity */
 
    struct FaceElemConn {
       Index_t lxim, lxip, letam, letap, lzetam, lzetap ;
    } ;
 
-   Kokkos::vector<FaceElemConn> m_faceToElem ; /* element conn across faces */
+   Kokkos::View<FaceElemConn*> m_faceToElem ; /* element conn across faces */
 
-   Kokkos::vector<Int_t>    m_elemBC ;  /* symmetry/free-surface flags for each elem face */
+   Kokkos::View<Int_t*>    m_elemBC ;  /* symmetry/free-surface flags for each elem face */
 
-   Kokkos::vector<Real_t> m_dxx ;  /* principal strains -- temporary */
-   Kokkos::vector<Real_t> m_dyy ;
-   Kokkos::vector<Real_t> m_dzz ;
+   Kokkos::View<Real_t*> m_dxx ;  /* principal strains -- temporary */
+   Kokkos::View<Real_t*> m_dyy ;
+   Kokkos::View<Real_t*> m_dzz ;
 
-   Kokkos::vector<Real_t> m_delv_xi ;    /* velocity gradient -- temporary */
-   Kokkos::vector<Real_t> m_delv_eta ;
-   Kokkos::vector<Real_t> m_delv_zeta ;
+   Kokkos::View<Real_t*> m_delv_xi ;    /* velocity gradient -- temporary */
+   Kokkos::View<Real_t*> m_delv_eta ;
+   Kokkos::View<Real_t*> m_delv_zeta ;
 
-   Kokkos::vector<Real_t> m_delx_xi ;    /* coordinate gradient -- temporary */
-   Kokkos::vector<Real_t> m_delx_eta ;
-   Kokkos::vector<Real_t> m_delx_zeta ;
+   Kokkos::View<Real_t*> m_delx_xi ;    /* coordinate gradient -- temporary */
+   Kokkos::View<Real_t*> m_delx_eta ;
+   Kokkos::View<Real_t*> m_delx_zeta ;
    
-   Kokkos::vector<Real_t> m_e ;   /* energy */
+   Kokkos::View<Real_t*> m_e ;   /* energy */
 
    struct Pcomponents {
       Real_t p, q ;
    } ;
 
-   Kokkos::vector<Pcomponents> m_pq ;   /* pressure and artificial viscosity */
+   Kokkos::View<Pcomponents*> m_pq ;   /* pressure and artificial viscosity */
 
    struct Qcomponents {
       Real_t ql, qq ;
    } ;
 
-   Kokkos::vector<Qcomponents> m_qlqq ;  /* linear and quadratic terms for q */
+   Kokkos::View<Qcomponents*> m_qlqq ;  /* linear and quadratic terms for q */
 
    struct Volume {
       Real_t v, volo ;
    } ;
 
-   Kokkos::vector<Volume> m_vol ;     /* relative and reference volume */
+   Kokkos::View<Volume*> m_vol ;     /* relative and reference volume */
 
-   Kokkos::vector<Real_t> m_vnew ;  /* new relative volume -- temporary */
-   Kokkos::vector<Real_t> m_delv ;  /* m_vnew - m_v */
-   Kokkos::vector<Real_t> m_vdov ;  /* volume derivative over volume */
+   Kokkos::View<Real_t*> m_vnew ;  /* new relative volume -- temporary */
+   Kokkos::View<Real_t*> m_delv ;  /* m_vnew - m_v */
+   Kokkos::View<Real_t*> m_vdov ;  /* volume derivative over volume */
 
-   Kokkos::vector<Real_t> m_arealg ;  /* characteristic length of an element */
+   Kokkos::View<Real_t*> m_arealg ;  /* characteristic length of an element */
    
-   Kokkos::vector<Real_t> m_ss ;      /* "sound speed" */
+   Kokkos::View<Real_t*> m_ss ;      /* "sound speed" */
 
-   Kokkos::vector<Real_t> m_elemMass ;  /* mass */
+   Kokkos::View<Real_t*> m_elemMass ;  /* mass */
 
    // Cutoffs (treat as constants)
    const Real_t  m_e_cut ;             // energy tolerance 

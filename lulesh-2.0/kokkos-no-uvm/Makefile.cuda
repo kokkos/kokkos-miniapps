@@ -2,7 +2,7 @@
 KOKKOS_PATH = ${HOME}/Kokkos/kokkos
 KOKKOS_DEVICES = "Cuda,OpenMP"
 KOKKOS_ARCH = "Volta70"
-KOKKOS_CUDA_OPTIONS = force_uvm,enable_lambda
+KOKKOS_CUDA_OPTIONS = enable_lambda
 SRC = $(wildcard *.cc)
 
 default: build
@@ -40,7 +40,7 @@ clean: kokkos-clean
 
 # Compilation rules
 
-%.o:%.cc $(KOKKOS_CPP_DEPENDS)
+%.o:%.cc $(KOKKOS_CPP_DEPENDS) lulesh.h lulesh_tuple.h
 	$(CXX) $(KOKKOS_CPPFLAGS) $(KOKKOS_CXXFLAGS) $(CXXFLAGS) $(EXTRA_INC) -c $<
 
 

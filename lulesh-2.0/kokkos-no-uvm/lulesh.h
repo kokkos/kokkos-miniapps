@@ -23,6 +23,7 @@
 
 #include <Kokkos_Core.hpp>
 #include <Kokkos_Vector.hpp>
+#include <Kokkos_StaticCrsGraph.hpp>
 
 #include <math.h>
 #include <vector>
@@ -141,113 +142,114 @@ public:
 
   void AllocateNodePersistent(Int_t numNode) // Node-centered
   {
-    m_x.resize(numNode); // coordinates
-    m_y.resize(numNode);
-    m_z.resize(numNode);
+    Kokkos::resize(m_x,numNode); // coordinates
+    Kokkos::resize(m_y,numNode);
+    Kokkos::resize(m_z,numNode);
 
-    m_xd.resize(numNode); // velocities
-    m_yd.resize(numNode);
-    m_zd.resize(numNode);
+    Kokkos::resize(m_xd,numNode); // velocities
+    Kokkos::resize(m_yd,numNode);
+    Kokkos::resize(m_zd,numNode);
 
-    m_xdd.resize(numNode); // accelerations
-    m_ydd.resize(numNode);
-    m_zdd.resize(numNode);
+    Kokkos::resize(m_xdd,numNode); // accelerations
+    Kokkos::resize(m_ydd,numNode);
+    Kokkos::resize(m_zdd,numNode);
 
-    m_fx.resize(numNode); // forces
-    m_fy.resize(numNode);
-    m_fz.resize(numNode);
-    printf("m_fx: %p %i\n",m_fx.data(),int(numNode));
+    Kokkos::resize(m_fx,numNode); // forces
+    Kokkos::resize(m_fy,numNode);
+    Kokkos::resize(m_fz,numNode);
 
-    m_nodalMass.resize(numNode); // mass
+    Kokkos::resize(m_nodalMass,numNode); // mass
 
-    m_c_x = m_x.d_view;
-    m_c_y = m_y.d_view;
-    m_c_z = m_z.d_view;
-    m_c_xd = m_xd.d_view;
-    m_c_yd = m_yd.d_view;
-    m_c_zd = m_zd.d_view;
+    m_c_x = m_x;
+    m_c_y = m_y;
+    m_c_z = m_z;
+    m_c_xd = m_xd;
+    m_c_yd = m_yd;
+    m_c_zd = m_zd;
   }
 
   void AllocateElemPersistent(Int_t numElem) // Elem-centered
   {
-    m_nodelist.resize(8 * numElem);
+    Kokkos::resize(m_nodelist,numElem);
 
     // elem connectivities through face
-    m_lxim.resize(numElem);
-    m_lxip.resize(numElem);
-    m_letam.resize(numElem);
-    m_letap.resize(numElem);
-    m_lzetam.resize(numElem);
-    m_lzetap.resize(numElem);
+    Kokkos::resize(m_lxim,numElem);
+    Kokkos::resize(m_lxip,numElem);
+    Kokkos::resize(m_letam,numElem);
+    Kokkos::resize(m_letap,numElem);
+    Kokkos::resize(m_lzetam,numElem);
+    Kokkos::resize(m_lzetap,numElem);
 
-    m_elemBC.resize(numElem);
+    Kokkos::resize(m_elemBC,numElem);
 
-    m_e.resize(numElem);
-    m_p.resize(numElem);
+    Kokkos::resize(m_e,numElem);
+    Kokkos::resize(m_p,numElem);
 
-    m_q.resize(numElem);
-    m_ql.resize(numElem);
-    m_qq.resize(numElem);
+    Kokkos::resize(m_q,numElem);
+    Kokkos::resize(m_ql,numElem);
+    Kokkos::resize(m_qq,numElem);
 
-    m_v.resize(numElem);
+    Kokkos::resize(m_v,numElem);
 
-    m_volo.resize(numElem);
-    m_delv.resize(numElem);
-    m_vdov.resize(numElem);
+    Kokkos::resize(m_volo,numElem);
+    Kokkos::resize(m_delv,numElem);
+    Kokkos::resize(m_vdov,numElem);
 
-    m_arealg.resize(numElem);
+    Kokkos::resize(m_arealg,numElem);
 
-    m_ss.resize(numElem);
+    Kokkos::resize(m_ss,numElem);
 
-    m_elemMass.resize(numElem);
+    Kokkos::resize(m_elemMass,numElem);
 
-    m_vnew.resize(numElem);
+    Kokkos::resize(m_vnew,numElem);
 
-    m_c_e = m_e.d_view;
-    m_c_p = m_p.d_view;
-    m_c_q = m_q.d_view;
-    m_c_ql = m_ql.d_view;
-    m_c_qq = m_qq.d_view;
-    m_c_delv = m_delv.d_view;
+    m_c_e = m_e;
+    m_c_p = m_p;
+    m_c_q = m_q;
+    m_c_ql = m_ql;
+    m_c_qq = m_qq;
+    m_c_delv = m_delv;
   }
 
   void AllocateGradients(Int_t numElem, Int_t allElem) {
     // Position gradients
-    m_delx_xi.resize(numElem);
-    m_delx_eta.resize(numElem);
-    m_delx_zeta.resize(numElem);
+    Kokkos::resize(m_delx_xi,numElem);
+    Kokkos::resize(m_delx_eta,numElem);
+    Kokkos::resize(m_delx_zeta,numElem);
 
     // Velocity gradients
-    m_delv_xi.resize(allElem);
-    m_delv_eta.resize(allElem);
-    m_delv_zeta.resize(allElem);
+    Kokkos::resize(m_delv_xi,allElem);
+    Kokkos::resize(m_delv_eta,allElem);
+    Kokkos::resize(m_delv_zeta,allElem);
   }
 
   void DeallocateGradients() {
-    m_delx_zeta.clear();
-    m_delx_eta.clear();
-    m_delx_xi.clear();
+    m_delx_zeta = Kokkos::View<Real_t*>();
+    m_delx_eta = Kokkos::View<Real_t*>();
+    m_delx_xi = Kokkos::View<Real_t*>();
 
-    m_delv_zeta.clear();
-    m_delv_eta.clear();
-    m_delv_xi.clear();
+    m_delv_zeta = Kokkos::View<Real_t*>();
+    m_delv_eta = Kokkos::View<Real_t*>();
+    m_delv_xi = Kokkos::View<Real_t*>();
   }
 
   void AllocateStrains(Int_t numElem) {
-    m_dxx.resize(numElem);
-    m_dyy.resize(numElem);
-    m_dzz.resize(numElem);
+    Kokkos::resize(m_dxx,numElem);
+    Kokkos::resize(m_dyy,numElem);
+    Kokkos::resize(m_dzz,numElem);
   }
 
   void DeallocateStrains() {
-    m_dzz.clear();
-    m_dyy.clear();
-    m_dxx.clear();
+    m_dzz = Kokkos::View<Real_t*>();
+    m_dyy = Kokkos::View<Real_t*>();
+    m_dxx = Kokkos::View<Real_t*>();
   }
 
   //
   // ACCESSORS
   //
+  KOKKOS_INLINE_FUNCTION
+  const Kokkos::View<Real_t*>& e_view() const { return m_e; }
 
   // Node-centered
 
@@ -316,9 +318,9 @@ public:
   Index_t symmX(const Index_t idx) const { return m_symmX[idx]; }
   Index_t symmY(const Index_t idx) const { return m_symmY[idx]; }
   Index_t symmZ(const Index_t idx) const { return m_symmZ[idx]; }
-  bool symmXempty() { return m_symmX.empty(); }
-  bool symmYempty() { return m_symmY.empty(); }
-  bool symmZempty() { return m_symmZ.empty(); }
+  bool symmXempty() { return m_symmX.data()==nullptr; }
+  bool symmYempty() { return m_symmY.data()==nullptr; }
+  bool symmZempty() { return m_symmZ.data()==nullptr; }
 
   //
   // Element-centered
@@ -326,12 +328,13 @@ public:
   Index_t &regElemSize(Index_t idx) { return m_regElemSize[idx]; }
   Index_t &regNumList(Index_t idx) { return m_regNumList[idx]; }
   Index_t *regNumList() { return &m_regNumList[0]; }
-  Index_t *regElemlist(Int_t r) { return m_regElemlist[r]; }
-  Index_t &regElemlist(const Int_t r, Index_t idx) const {
-    return m_regElemlist[r][idx];
+  Index_t *regElemlist(Int_t r) const { return &m_regElemlist.entries(m_regElemlist.row_map(r)); }
+  Index_t regElemlist(const Int_t r, Index_t idx) const {
+    return m_regElemlist.entries(m_regElemlist.row_map(r)+idx);
   }
 
-  Index_t *nodelist(Index_t idx) const { return &m_nodelist[Index_t(8) * idx]; }
+  Index_t &nodelist(Index_t i, Index_t j) const { return m_nodelist(i,j); }
+
 
   // elem connectivities through face
   Index_t &lxim(const Index_t idx) const { return m_lxim[idx]; }
@@ -540,9 +543,9 @@ private:
   //
 
   /* Node-centered */
-  Kokkos::vector<Real_t> m_x; /* coordinates */
-  Kokkos::vector<Real_t> m_y;
-  Kokkos::vector<Real_t> m_z;
+  Kokkos::View<Real_t*> m_x; /* coordinates */
+  Kokkos::View<Real_t*> m_y;
+  Kokkos::View<Real_t*> m_z;
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
       m_c_x; /* coordinates */
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
@@ -550,9 +553,9 @@ private:
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
       m_c_z; /* coordinates */
 
-  Kokkos::vector<Real_t> m_xd; /* velocities */
-  Kokkos::vector<Real_t> m_yd;
-  Kokkos::vector<Real_t> m_zd;
+  Kokkos::View<Real_t*> m_xd; /* velocities */
+  Kokkos::View<Real_t*> m_yd;
+  Kokkos::View<Real_t*> m_zd;
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
       m_c_xd; /* coordinates */
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
@@ -560,19 +563,19 @@ private:
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
       m_c_zd; /* coordinates */
 
-  Kokkos::vector<Real_t> m_xdd; /* accelerations */
-  Kokkos::vector<Real_t> m_ydd;
-  Kokkos::vector<Real_t> m_zdd;
+  Kokkos::View<Real_t*> m_xdd; /* accelerations */
+  Kokkos::View<Real_t*> m_ydd;
+  Kokkos::View<Real_t*> m_zdd;
 
-  Kokkos::vector<Real_t> m_fx; /* forces */
-  Kokkos::vector<Real_t> m_fy;
-  Kokkos::vector<Real_t> m_fz;
+  Kokkos::View<Real_t*> m_fx; /* forces */
+  Kokkos::View<Real_t*> m_fy;
+  Kokkos::View<Real_t*> m_fz;
 
-  Kokkos::vector<Real_t> m_nodalMass; /* mass */
+  Kokkos::View<Real_t*> m_nodalMass; /* mass */
 
-  Kokkos::vector<Index_t> m_symmX; /* symmetry plane nodesets */
-  Kokkos::vector<Index_t> m_symmY;
-  Kokkos::vector<Index_t> m_symmZ;
+  Kokkos::View<Index_t*> m_symmX; /* symmetry plane nodesets */
+  Kokkos::View<Index_t*> m_symmY;
+  Kokkos::View<Index_t*> m_symmZ;
 
   // Element-centered
 
@@ -581,44 +584,46 @@ private:
   Int_t m_cost;            // imbalance cost
   Index_t *m_regElemSize;  // Size of region sets
   Index_t *m_regNumList;   // Region number per domain element
-  Index_t **m_regElemlist; // region indexset
+  //Index_t **m_regElemlist; // region indexset
+  using t_regElemlist = Kokkos::StaticCrsGraph<Index_t,Kokkos::LayoutLeft,Kokkos::DefaultExecutionSpace,Kokkos::MemoryTraits<0>,Index_t>;
+  t_regElemlist m_regElemlist;
 
-  Kokkos::vector<Index_t> m_nodelist; /* elemToNode connectivity */
+  Kokkos::View<Index_t*[8],Kokkos::LayoutRight> m_nodelist; /* elemToNode connectivity */
 
-  Kokkos::vector<Index_t> m_lxim; /* element connectivity across each face */
-  Kokkos::vector<Index_t> m_lxip;
-  Kokkos::vector<Index_t> m_letam;
-  Kokkos::vector<Index_t> m_letap;
-  Kokkos::vector<Index_t> m_lzetam;
-  Kokkos::vector<Index_t> m_lzetap;
+  Kokkos::View<Index_t*> m_lxim; /* element connectivity across each face */
+  Kokkos::View<Index_t*> m_lxip;
+  Kokkos::View<Index_t*> m_letam;
+  Kokkos::View<Index_t*> m_letap;
+  Kokkos::View<Index_t*> m_lzetam;
+  Kokkos::View<Index_t*> m_lzetap;
 
-  Kokkos::vector<Int_t>
+  Kokkos::View<Int_t*>
       m_elemBC; /* symmetry/free-surface flags for each elem face */
 
-  Kokkos::vector<Real_t> m_dxx; /* principal strains -- temporary */
-  Kokkos::vector<Real_t> m_dyy;
-  Kokkos::vector<Real_t> m_dzz;
+  Kokkos::View<Real_t*> m_dxx; /* principal strains -- temporary */
+  Kokkos::View<Real_t*> m_dyy;
+  Kokkos::View<Real_t*> m_dzz;
 
-  Kokkos::vector<Real_t> m_delv_xi; /* velocity gradient -- temporary */
-  Kokkos::vector<Real_t> m_delv_eta;
-  Kokkos::vector<Real_t> m_delv_zeta;
+  Kokkos::View<Real_t*> m_delv_xi; /* velocity gradient -- temporary */
+  Kokkos::View<Real_t*> m_delv_eta;
+  Kokkos::View<Real_t*> m_delv_zeta;
 
-  Kokkos::vector<Real_t> m_delx_xi; /* coordinate gradient -- temporary */
-  Kokkos::vector<Real_t> m_delx_eta;
-  Kokkos::vector<Real_t> m_delx_zeta;
+  Kokkos::View<Real_t*> m_delx_xi; /* coordinate gradient -- temporary */
+  Kokkos::View<Real_t*> m_delx_eta;
+  Kokkos::View<Real_t*> m_delx_zeta;
 
-  Kokkos::vector<Real_t> m_e; /* energy */
+  Kokkos::View<Real_t*> m_e; /* energy */
 
-  Kokkos::vector<Real_t> m_p;  /* pressure */
-  Kokkos::vector<Real_t> m_q;  /* q */
-  Kokkos::vector<Real_t> m_ql; /* linear term for q */
-  Kokkos::vector<Real_t> m_qq; /* quadratic term for q */
+  Kokkos::View<Real_t*> m_p;  /* pressure */
+  Kokkos::View<Real_t*> m_q;  /* q */
+  Kokkos::View<Real_t*> m_ql; /* linear term for q */
+  Kokkos::View<Real_t*> m_qq; /* quadratic term for q */
 
-  Kokkos::vector<Real_t> m_v;    /* relative volume */
-  Kokkos::vector<Real_t> m_volo; /* reference volume */
-  Kokkos::vector<Real_t> m_vnew; /* new relative volume -- temporary */
-  Kokkos::vector<Real_t> m_delv; /* m_vnew - m_v */
-  Kokkos::vector<Real_t> m_vdov; /* volume derivative over volume */
+  Kokkos::View<Real_t*> m_v;    /* relative volume */
+  Kokkos::View<Real_t*> m_volo; /* reference volume */
+  Kokkos::View<Real_t*> m_vnew; /* new relative volume -- temporary */
+  Kokkos::View<Real_t*> m_delv; /* m_vnew - m_v */
+  Kokkos::View<Real_t*> m_vdov; /* volume derivative over volume */
 
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
       m_c_e; /* coordinates */
@@ -633,11 +638,11 @@ private:
   Kokkos::View<const Real_t *, Kokkos::MemoryTraits<Kokkos::RandomAccess>>
       m_c_delv; /* coordinates */
 
-  Kokkos::vector<Real_t> m_arealg; /* characteristic length of an element */
+  Kokkos::View<Real_t*> m_arealg; /* characteristic length of an element */
 
-  Kokkos::vector<Real_t> m_ss; /* "sound speed" */
+  Kokkos::View<Real_t*> m_ss; /* "sound speed" */
 
-  Kokkos::vector<Real_t> m_elemMass; /* mass */
+  Kokkos::View<Real_t*> m_elemMass; /* mass */
 
   // Cutoffs (treat as constants)
   const Real_t m_e_cut; // energy tolerance
@@ -692,8 +697,8 @@ private:
   Index_t m_maxEdgeSize;
 
   // OMP hack
-  Index_t *m_nodeElemStart;
-  Index_t *m_nodeElemCornerList;
+  Kokkos::View<Index_t*> m_nodeElemStart;
+  Kokkos::View<Index_t*> m_nodeElemCornerList;
 
   // Used in setup
   Index_t m_rowMin, m_rowMax;
@@ -753,12 +758,12 @@ void InitMeshDecomp(Int_t numRanks, Int_t myRank, Int_t *col, Int_t *row,
 /* better managed, as in luleshFT */
 
 template <typename T> T *Allocate(size_t size) {
-  return static_cast<T *>(Kokkos::kokkos_malloc<>(sizeof(T) * size + 8));
+  return static_cast<T *>(Kokkos::kokkos_malloc<Kokkos::HostSpace>(sizeof(T) * size + 8));
 }
 
 template <typename T> void Release(T **ptr) {
   if (*ptr != NULL) {
-    Kokkos::kokkos_free<>(*ptr);
+    Kokkos::kokkos_free<Kokkos::HostSpace>(*ptr);
     *ptr = NULL;
   }
 }
