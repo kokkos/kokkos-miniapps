@@ -990,7 +990,8 @@ Real_t CalcElemVolume(const Real_t x[8], const Real_t y[8], const Real_t z[8]) {
                         z[2], z[3], z[4], z[5], z[6], z[7]);
 }
 
-static inline Real_t AreaFace(const Real_t x0, const Real_t x1, const Real_t x2,
+KOKKOS_INLINE_FUNCTION
+Real_t AreaFace(const Real_t x0, const Real_t x1, const Real_t x2,
                               const Real_t x3, const Real_t y0, const Real_t y1,
                               const Real_t y2, const Real_t y3, const Real_t z0,
                               const Real_t z1, const Real_t z2,
@@ -1040,7 +1041,7 @@ KOKKOS_INLINE_FUNCTION Real_t
   return charLength;
 }
 
-static inline void
+KOKKOS_INLINE_FUNCTION void
 CalcElemVelocityGradient(const Real_t *const xvel, const Real_t *const yvel,
                          const Real_t *const zvel, const Real_t b[][8],
                          const Real_t detJ, Real_t *const d) {
@@ -2099,9 +2100,6 @@ int main(int argc, char *argv[]) {
   if ((myRank == 0) && (opts.quiet == 0)) {
     printf("Running problem size %d^3 per domain until completion\n", opts.nx);
     printf("Num processors: %d\n", numRanks);
-#if _OPENMP
-    printf("Num threads: %d\n", omp_get_max_threads());
-#endif
     printf("Total number of elements: %lld\n\n",
            (long long int)(numRanks * opts.nx * opts.nx * opts.nx));
     printf("To run other sizes, use -s <integer>.\n");

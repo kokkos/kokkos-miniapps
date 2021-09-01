@@ -2,9 +2,6 @@
 #if USE_MPI
 # include <mpi.h>
 #endif
-#if _OPENMP
-#include <omp.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -202,13 +199,7 @@ Domain::Domain(Int_t numRanks, Index_t colLoc,
 
    BuildMesh(nx, edgeNodes, edgeElems);
 
-#if _OPENMP
    SetupThreadSupportStructures();
-#else
-   // These arrays are not used if we're not threaded
-   m_nodeElemStart = NULL;
-   m_nodeElemCornerList = NULL;
-#endif
 
    // Setup region index sets. For now, these are constant sized
    // throughout the run, but could be changed every cycle to 

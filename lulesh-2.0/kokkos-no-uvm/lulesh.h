@@ -315,12 +315,12 @@ public:
   }
 
   // Nodes on symmertry planes
-  Index_t symmX(const Index_t idx) const { return m_symmX[idx]; }
-  Index_t symmY(const Index_t idx) const { return m_symmY[idx]; }
-  Index_t symmZ(const Index_t idx) const { return m_symmZ[idx]; }
-  bool symmXempty() { return m_symmX.data()==nullptr; }
-  bool symmYempty() { return m_symmY.data()==nullptr; }
-  bool symmZempty() { return m_symmZ.data()==nullptr; }
+  KOKKOS_INLINE_FUNCTION Index_t symmX(const Index_t idx) const { return m_symmX[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t symmY(const Index_t idx) const { return m_symmY[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t symmZ(const Index_t idx) const { return m_symmZ[idx]; }
+  KOKKOS_INLINE_FUNCTION bool symmXempty() { return m_symmX.data()==nullptr; }
+  KOKKOS_INLINE_FUNCTION bool symmYempty() { return m_symmY.data()==nullptr; }
+  KOKKOS_INLINE_FUNCTION bool symmZempty() { return m_symmZ.data()==nullptr; }
 
   //
   // Element-centered
@@ -329,23 +329,23 @@ public:
   Index_t &regNumList(Index_t idx) { return m_regNumList[idx]; }
   Index_t *regNumList() { return &m_regNumList[0]; }
   Index_t *regElemlist(Int_t r) const { return &m_regElemlist.entries(m_regElemlist.row_map(r)); }
-  Index_t regElemlist(const Int_t r, Index_t idx) const {
+  KOKKOS_INLINE_FUNCTION Index_t regElemlist(const Int_t r, Index_t idx) const {
     return m_regElemlist.entries(m_regElemlist.row_map(r)+idx);
   }
 
-  Index_t &nodelist(Index_t i, Index_t j) const { return m_nodelist(i,j); }
+  KOKKOS_INLINE_FUNCTION Index_t &nodelist(Index_t i, Index_t j) const { return m_nodelist(i,j); }
 
 
   // elem connectivities through face
-  Index_t &lxim(const Index_t idx) const { return m_lxim[idx]; }
-  Index_t &lxip(const Index_t idx) const { return m_lxip[idx]; }
-  Index_t &letam(const Index_t idx) const { return m_letam[idx]; }
-  Index_t &letap(const Index_t idx) const { return m_letap[idx]; }
-  Index_t &lzetam(const Index_t idx) const { return m_lzetam[idx]; }
-  Index_t &lzetap(const Index_t idx) const { return m_lzetap[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t &lxim(const Index_t idx) const { return m_lxim[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t &lxip(const Index_t idx) const { return m_lxip[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t &letam(const Index_t idx) const { return m_letam[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t &letap(const Index_t idx) const { return m_letap[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t &lzetam(const Index_t idx) const { return m_lzetam[idx]; }
+  KOKKOS_INLINE_FUNCTION Index_t &lzetap(const Index_t idx) const { return m_lzetap[idx]; }
 
   // elem face symm/free-surface flag
-  Int_t &elemBC(const Index_t idx) const { return m_elemBC[idx]; }
+  KOKKOS_INLINE_FUNCTION Int_t &elemBC(const Index_t idx) const { return m_elemBC[idx]; }
 
   // Principal strains - temporary
   KOKKOS_INLINE_FUNCTION Real_t &dxx(const Index_t idx) const {
