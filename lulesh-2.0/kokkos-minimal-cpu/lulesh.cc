@@ -359,8 +359,8 @@ static inline void IntegrateStressForElems(Domain &domain, Real_t *sigxx,
                                   &fx_elem[k * 8], &fy_elem[k * 8],
                                   &fz_elem[k * 8]);
     } else {
-      SumElemStressesToNodeForces(B, sigxx[k], sigyy[k], sigzz[k], &fx_local[8],
-                                  &fy_local[8], &fz_local[8]);
+      SumElemStressesToNodeForces(B, sigxx[k], sigyy[k], sigzz[k], fx_local.data(),
+                                  fy_local.data(), fz_local.data());
 
       for (Index_t lnode = 0; lnode < 8; ++lnode) {
         Index_t gnode = elemToNode[lnode];
@@ -388,11 +388,11 @@ static inline void IntegrateStressForElems(Domain &domain, Real_t *sigxx,
     domain.fx(gnode) = fx_tmp;
     domain.fy(gnode) = fy_tmp;
     domain.fz(gnode) = fz_tmp;
-  });
-  Release(&fz_elem);
-  Release(&fy_elem);
-  Release(&fx_elem);
-}
+    });
+    Release(&fz_elem);
+    Release(&fy_elem);
+    Release(&fx_elem);
+  }
 }
 
 static inline void VoluDer(const Real_t x0, const Real_t x1, const Real_t x2,
