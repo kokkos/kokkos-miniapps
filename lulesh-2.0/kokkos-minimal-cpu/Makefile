@@ -1,7 +1,7 @@
 #Set your Kokkos path to something appropriate
 KOKKOS_PATH = ${HOME}/kokkos
 KOKKOS_DEVICES = "Serial"
-KOKKOS_ARCH = 
+KOKKOS_ARCH = "SNB"
 
 SRC = $(wildcard *.cc)
 
